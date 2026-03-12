@@ -2,9 +2,10 @@ import Foundation
 
 struct AuthViewState: Equatable {
     var isLoading: Bool = false
-    var loginButtonEnabled: Bool = false
     var errorMessage: String?
-    var telegramBotLink: URL?
+    var showErrorAsAlert: Bool = false
+    var emailError: String?
+    var passwordError: String?
 }
 
 protocol AuthView: AnyObject {
