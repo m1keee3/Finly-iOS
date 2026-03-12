@@ -296,38 +296,11 @@ final class LoginViewController: UIViewController {
     }
 
     @objc private func emailChanged() {
-        guard let text = emailTextField.text, !text.isEmpty else {
-            emailErrorLabel.hide()
-            emailContainerView.setHighlight(.normal)
-            return
-        }
-        if isValidEmail(text) {
-            emailErrorLabel.hide()
-            emailContainerView.setHighlight(.normal)
-        } else {
-            emailErrorLabel.show("Введите корректный email")
-            emailContainerView.setHighlight(.error)
-        }
+        viewModel.didChangeEmail(emailTextField.text ?? "")
     }
 
     @objc private func passwordChanged() {
-        guard let text = passwordTextField.text, !text.isEmpty else {
-            passwordErrorLabel.hide()
-            passwordContainerView.setHighlight(.normal)
-            return
-        }
-        if text.count >= 6 {
-            passwordErrorLabel.hide()
-            passwordContainerView.setHighlight(.normal)
-        } else {
-            passwordErrorLabel.show("Минимум 6 символов")
-            passwordContainerView.setHighlight(.error)
-        }
-    }
-
-    private func isValidEmail(_ email: String) -> Bool {
-        let regex = #"^[A-Za-z0-9._%+\-]+@[A-Za-z0-9.\-]+\.[A-Za-z]{2,}$"#
-        return email.range(of: regex, options: .regularExpression) != nil
+        viewModel.didChangePassword(passwordTextField.text ?? "")
     }
     
     private func setupKeyboardObservers() {
@@ -378,14 +351,58 @@ extension LoginViewController: AuthView {
             loginButton.configuration?.title = "Войти"
         }
 
-        if let message = state.errorMessage {
-            generalErrorLabel.text     = message
-            generalErrorLabel.isHidden = false
+        if let emailError = state.emailError {
+            emailErrorLabel.show(emailError)
             emailContainerView.setHighlight(.error)
+        } else {
+            emailErrorLabel.hide()
+            if emailTextField.isEditing {
+                emailContainerView.setHighlight(.focused)
+            } else {
+                emailContainerView.setHighlight(.normal)
+            }
+        }
+
+        if let passwordError = state.passwordError {
+            passwordErrorLabel.show(passwordError)
             passwordContainerView.setHighlight(.error)
         } else {
-            generalErrorLabel.isHidden = true
+            passwordErrorLabel.hide()
+            if passwordTextField.isEditing {
+                passwordContainerView.setHighlight(.focused)
+            } else {
+                passwordContainerView.setHighlight(.normal)
+            }
         }
+
+        if let message = state.errorMessage {
+            if state.showErrorAsAlert {
+                generalErrorLabel.isHidden = true
+                generalErrorLabel.text = nil
+                showAlert(message: message)
+            } else {
+                generalErrorLabel.text     = message
+                generalErrorLabel.isHidden = false
+                emailContainerView.setHighlight(.error)
+                passwordContainerView.setHighlight(.error)
+            }
+        } else {
+            generalErrorLabel.isHidden = true
+            generalErrorLabel.text = nil
+        }
+    }
+
+
+    private func showAlert(message: String) {
+        let alert = UIAlertController(
+            title: "Уведомление",
+            message: message,
+            preferredStyle: .alert
+        )
+        alert.addAction(UIAlertAction(title: "OK", style: .default) { [weak self] _ in
+            self?.viewModel.didShowAlert()
+        })
+        present(alert, animated: true)
     }
 }
 

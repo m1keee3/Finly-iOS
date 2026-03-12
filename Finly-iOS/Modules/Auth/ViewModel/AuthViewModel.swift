@@ -21,7 +21,6 @@ final class AuthViewModel: AuthViewModelProtocol {
         self.coordinator = coordinator
     }
 
-
     func didTapLoginWithTelegram() {
         coordinator?.openTelegramBot()
     }
@@ -29,6 +28,7 @@ final class AuthViewModel: AuthViewModelProtocol {
     func didTapLoginWithEmail(email: String, password: String) {
         guard !email.isEmpty, !password.isEmpty else {
             state.errorMessage = AuthError.emptyFields.errorDescription
+            state.showErrorAsAlert = false
             return
         }
 
@@ -46,10 +46,12 @@ final class AuthViewModel: AuthViewModelProtocol {
             } catch let error as AuthError {
                 setLoading(false)
                 state.errorMessage = error.errorDescription
+                state.showErrorAsAlert = false
 
             } catch {
                 setLoading(false)
-                state.errorMessage = AuthError.unknown(error.localizedDescription).errorDescription
+                state.errorMessage = error.localizedDescription
+                state.showErrorAsAlert = false
             }
         }
     }
@@ -69,19 +71,56 @@ final class AuthViewModel: AuthViewModelProtocol {
             } catch let error as AuthError {
                 setLoading(false)
                 state.errorMessage = error.errorDescription
+                state.showErrorAsAlert = true
 
             } catch {
                 setLoading(false)
                 state.errorMessage = error.localizedDescription
+                state.showErrorAsAlert = true
             }
         }
     }
 
+    func didChangeEmail(_ email: String) {
+        state.errorMessage = nil
+        state.showErrorAsAlert = false
+        
+        guard !email.isEmpty else {
+            state.emailError = nil
+            return
+        }
+        state.emailError = isValidEmail(email)
+            ? nil
+            : "Введите корректный email"
+    }
+
+    func didChangePassword(_ password: String) {
+        state.errorMessage = nil
+        state.showErrorAsAlert = false
+        
+        guard !password.isEmpty else {
+            state.passwordError = nil
+            return
+        }
+        state.passwordError = password.count >= 6
+            ? nil
+            : "Минимум 6 символов"
+    }
+
+    func didShowAlert() {
+        state.errorMessage = nil
+        state.showErrorAsAlert = false
+    }
+
     private func setLoading(_ isLoading: Bool) {
         state.isLoading = isLoading
-        state.loginButtonEnabled = !isLoading
         if isLoading {
             state.errorMessage = nil
         }
+    }
+
+    private func isValidEmail(_ email: String) -> Bool {
+        let regex = #"^[A-Za-z0-9._%+\-]+@[A-Za-z0-9.\-]+\.[A-Za-z]{2,}$"#
+        return email.range(of: regex, options: .regularExpression) != nil
     }
 }
