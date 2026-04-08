@@ -1,12 +1,19 @@
 import Foundation
 
+enum DashboardLoadingState: Equatable {
+    case idle
+    case loading
+    case content
+    case empty
+    case error(String)
+}
+
 struct DashboardViewState: Equatable {
-    var isLoading: Bool = true
+    var loadingState: DashboardLoadingState = .idle
     var stats: DashboardStats?
     var patterns: [PatternListItem] = []
     var filter: PatternsFilter
-    var errorMessage: String?
-    
+
     var filteredPatterns: [PatternListItem] {
         patterns
             .filter { $0.matchesCount >= filter.minMatches }
@@ -22,7 +29,7 @@ struct DashboardViewState: Equatable {
                 }
             }
     }
-    
+
     init(filter: PatternsFilter = PatternsFilter()) {
         self.filter = filter
     }
