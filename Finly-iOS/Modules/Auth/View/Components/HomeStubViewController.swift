@@ -4,6 +4,8 @@ final class HomeStubViewController: UIViewController {
 
     private let session: UserSession
 
+    var onDashboardTap: (() -> Void)?
+
     init(session: UserSession) {
         self.session = session
         super.init(nibName: nil, bundle: nil)
@@ -23,7 +25,7 @@ final class HomeStubViewController: UIViewController {
         stack.translatesAutoresizingMaskIntoConstraints = false
         stack.axis      = .vertical
         stack.alignment = .center
-        stack.spacing   = 12
+        stack.spacing   = 16
         view.addSubview(stack)
 
         let title = UILabel()
@@ -35,7 +37,14 @@ final class HomeStubViewController: UIViewController {
         stub.font      = .systemFont(ofSize: 13)
         stub.textColor = .tertiaryLabel
 
-        [title, stub].forEach { stack.addArrangedSubview($0) }
+        var config = UIButton.Configuration.filled()
+        config.title = "Dashboard"
+        config.baseBackgroundColor = .systemIndigo
+        config.cornerStyle = .large
+        let dashboardButton = UIButton(configuration: config)
+        dashboardButton.addTarget(self, action: #selector(dashboardTapped), for: .touchUpInside)
+
+        [title, stub, dashboardButton].forEach { stack.addArrangedSubview($0) }
 
         NSLayoutConstraint.activate([
             stack.centerXAnchor.constraint(equalTo: view.centerXAnchor),
@@ -43,5 +52,9 @@ final class HomeStubViewController: UIViewController {
             stack.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 32),
             stack.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -32),
         ])
+    }
+
+    @objc private func dashboardTapped() {
+        onDashboardTap?()
     }
 }
