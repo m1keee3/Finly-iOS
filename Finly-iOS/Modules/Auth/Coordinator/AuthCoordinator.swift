@@ -30,6 +30,16 @@ final class AuthCoordinator: AuthCoordinatorProtocol {
 
     func didFinishAuth(with session: UserSession) {
         let stubVC = HomeStubViewController(session: session)
+
+        stubVC.onDashboardTap = { [weak self] in
+            guard let self else { return }
+            let coordinator = DashboardCoordinator(
+                navigationController: self.navigationController,
+                session: session
+            )
+            coordinator.start()
+        }
+
         navigationController.setViewControllers([stubVC], animated: true)
     }
 

@@ -1,4 +1,3 @@
-// Finly-iOS/Modules/Dashboard/Protocols/DashboardViewModelProtocol.swift
 import Foundation
 
 protocol DashboardViewModelProtocol {
