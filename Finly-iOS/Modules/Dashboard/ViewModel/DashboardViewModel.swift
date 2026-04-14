@@ -64,6 +64,10 @@ final class DashboardViewModel: DashboardViewModelProtocol {
         coordinator?.showPatternDetails(for: patternId)
     }
 
+    func didChangeSearch(_ query: String) {
+        state.searchQuery = query
+    }
+
     private func cancelAndReset() {
         loadTask?.cancel()
         loadTask = nil

@@ -7,7 +7,7 @@ enum PatternsSortBy: String, Equatable, CaseIterable {
 }
 
 struct PatternsFilter: Equatable {
-    var minMatches: Int = 5
+    var minMatches: Int = 0
     var minMatchesRange: ClosedRange<Int> = 0...200
     var deviationFromAvg: Double = 0.0
     var patternType: PatternType = .all

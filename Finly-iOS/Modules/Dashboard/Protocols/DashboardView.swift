@@ -13,11 +13,18 @@ struct DashboardViewState: Equatable {
     var stats: DashboardStats?
     var patterns: [PatternListItem] = []
     var filter: PatternsFilter
+    var searchQuery: String = ""
 
     var filteredPatterns: [PatternListItem] {
         patterns
             .filter { $0.matchesCount >= filter.minMatches }
             .filter { filter.patternType == .all ? true : $0.patternType == filter.patternType }
+            .filter {
+                searchQuery.isEmpty
+                    ? true
+                    : $0.ticker.localizedCaseInsensitiveContains(searchQuery)
+                        || $0.companyCode.localizedCaseInsensitiveContains(searchQuery)
+            }
             .sorted { lhs, rhs in
                 switch filter.sortBy {
                 case .probability:
@@ -28,6 +35,10 @@ struct DashboardViewState: Equatable {
                     return filter.sortAscending ? lhs.priceChange < rhs.priceChange : lhs.priceChange > rhs.priceChange
                 }
             }
+    }
+
+    var cellViewModels: [PatternCellViewModel] {
+        filteredPatterns.map { PatternCellViewModel(from: $0) }
     }
 
     init(filter: PatternsFilter = PatternsFilter()) {

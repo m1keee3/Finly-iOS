@@ -4,6 +4,7 @@ final class AuthCoordinator: AuthCoordinatorProtocol {
 
     private let navigationController: UINavigationController
     private let authService: AuthServiceProtocol
+    private var childCoordinator: DashboardCoordinator?
 
     private let telegramBotURL = URL(string: "https://t.me/finly_bot")!
 
@@ -37,6 +38,7 @@ final class AuthCoordinator: AuthCoordinatorProtocol {
                 navigationController: self.navigationController,
                 session: session
             )
+            self.childCoordinator = coordinator
             coordinator.start()
         }
 

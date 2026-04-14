@@ -12,6 +12,8 @@ protocol DashboardViewModelProtocol {
     func didToggleSortOrder()
     
     func didSelectPattern(_ patternId: String)
-    
+
+    func didChangeSearch(_ query: String)
+
     func didTapRetry()
 }
