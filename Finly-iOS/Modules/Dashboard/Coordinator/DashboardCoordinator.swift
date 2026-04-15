@@ -14,13 +14,14 @@ final class DashboardCoordinator: DashboardCoordinatorProtocol {
         let networkClient = NetworkClient()
         let service = DashboardService(networkClient: networkClient)
         let viewModel = DashboardViewModel(service: service, coordinator: self)
-        let viewController = DashboardStubViewController(viewModel: viewModel)
+        let viewController = DashboardViewController(viewModel: viewModel)
         viewModel.view = viewController
         navigationController.pushViewController(viewController, animated: true)
     }
 
-
     func showPatternDetails(for patternId: String) {
+        let vc = PatternDetailViewController(patternId: patternId)
+        navigationController.pushViewController(vc, animated: true)
     }
 
     func goBack() {
