@@ -29,39 +29,32 @@ final class DashboardStatsHeaderView: UIView {
     }
 
     private func setupLayout() {
-        backgroundColor = .secondarySystemBackground
+        backgroundColor = DS.Colors.backgroundSecondary
 
-        bestTickerLabel.font = .systemFont(ofSize: 15, weight: .semibold)
-        bestTickerLabel.textColor = .label
-
-        probabilityLabel.font = .systemFont(ofSize: 13)
-        probabilityLabel.textColor = .secondaryLabel
-
-        activePatternsLabel.font = .systemFont(ofSize: 13)
-        activePatternsLabel.textColor = .secondaryLabel
-
-        avgPriceChangeLabel.font = .systemFont(ofSize: 13)
-        avgPriceChangeLabel.textColor = .secondaryLabel
+        bestTickerLabel.apply(.sectionHeader)
+        probabilityLabel.apply(.sectionMeta)
+        activePatternsLabel.apply(.sectionMeta)
+        avgPriceChangeLabel.apply(.sectionMeta)
 
         let topRow = UIStackView(arrangedSubviews: [bestTickerLabel, probabilityLabel])
         topRow.axis = .horizontal
-        topRow.spacing = 12
+        topRow.spacing = DS.Spacing.m
 
         let bottomRow = UIStackView(arrangedSubviews: [activePatternsLabel, avgPriceChangeLabel])
         bottomRow.axis = .horizontal
-        bottomRow.spacing = 12
+        bottomRow.spacing = DS.Spacing.m
 
         let stack = UIStackView(arrangedSubviews: [topRow, bottomRow])
         stack.axis = .vertical
-        stack.spacing = 4
+        stack.spacing = DS.Spacing.xs
         stack.translatesAutoresizingMaskIntoConstraints = false
 
         addSubview(stack)
         NSLayoutConstraint.activate([
-            stack.topAnchor.constraint(equalTo: topAnchor, constant: 12),
-            stack.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -12),
-            stack.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16),
-            stack.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16),
+            stack.topAnchor.constraint(equalTo: topAnchor, constant: DS.Spacing.m),
+            stack.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -DS.Spacing.m),
+            stack.leadingAnchor.constraint(equalTo: leadingAnchor, constant: DS.Spacing.l),
+            stack.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -DS.Spacing.l),
         ])
     }
 }

@@ -23,7 +23,7 @@ final class PatternTableViewCell: UITableViewCell {
         subtitleLabel.text = nil
         probabilityLabel.text = nil
         priceChangeLabel.text = nil
-        probabilityLabel.textColor = .secondaryLabel
+        probabilityLabel.textColor = DS.Colors.labelSecondary
     }
 
     func configure(with viewModel: PatternCellViewModel) {
@@ -33,49 +33,44 @@ final class PatternTableViewCell: UITableViewCell {
         priceChangeLabel.text = viewModel.detailText
 
         if let detail = viewModel.detailText {
-            priceChangeLabel.textColor = detail.hasPrefix("+") ? .systemGreen : .systemRed
+            priceChangeLabel.textColor = detail.hasPrefix("+") ? DS.Colors.positive : DS.Colors.destructive
         }
     }
 
     private func setupLayout() {
-        titleLabel.font = .systemFont(ofSize: 16, weight: .semibold)
-        titleLabel.textColor = .label
-
-        subtitleLabel.font = .systemFont(ofSize: 13)
-        subtitleLabel.textColor = .secondaryLabel
-
-        probabilityLabel.font = .systemFont(ofSize: 15, weight: .medium)
-        probabilityLabel.textColor = .secondaryLabel
+        titleLabel.apply(.listTitle)
+        subtitleLabel.apply(.listSubtitle)
+        probabilityLabel.apply(.listMetric)
         probabilityLabel.textAlignment = .right
         probabilityLabel.setContentHuggingPriority(.required, for: .horizontal)
         probabilityLabel.setContentCompressionResistancePriority(.required, for: .horizontal)
 
-        priceChangeLabel.font = .systemFont(ofSize: 13)
+        priceChangeLabel.font = DS.Typography.bodySmall()
         priceChangeLabel.textAlignment = .right
         priceChangeLabel.setContentHuggingPriority(.required, for: .horizontal)
         priceChangeLabel.setContentCompressionResistancePriority(.required, for: .horizontal)
 
         let leftStack = UIStackView(arrangedSubviews: [titleLabel, subtitleLabel])
         leftStack.axis = .vertical
-        leftStack.spacing = 3
+        leftStack.spacing = DS.Spacing.xxs
 
         let rightStack = UIStackView(arrangedSubviews: [probabilityLabel, priceChangeLabel])
         rightStack.axis = .vertical
-        rightStack.spacing = 3
+        rightStack.spacing = DS.Spacing.xxs
         rightStack.alignment = .trailing
 
         let row = UIStackView(arrangedSubviews: [leftStack, rightStack])
         row.axis = .horizontal
         row.alignment = .center
-        row.spacing = 8
+        row.spacing = DS.Spacing.s
         row.translatesAutoresizingMaskIntoConstraints = false
 
         contentView.addSubview(row)
         NSLayoutConstraint.activate([
-            row.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 12),
-            row.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -12),
-            row.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
-            row.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
+            row.topAnchor.constraint(equalTo: contentView.topAnchor, constant: DS.Spacing.m),
+            row.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -DS.Spacing.m),
+            row.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: DS.Spacing.l),
+            row.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -DS.Spacing.l),
         ])
     }
 }

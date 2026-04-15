@@ -17,11 +17,11 @@ final class LoginViewController: UIViewController {
         v.translatesAutoresizingMaskIntoConstraints = false
         return v
     }()
-    
+
     private let logoImageView: UIImageView = {
         let iv = UIImageView(image: UIImage(systemName: "chart.line.uptrend.xyaxis"))
         iv.translatesAutoresizingMaskIntoConstraints = false
-        iv.tintColor = .systemBlue
+        iv.tintColor = DS.Colors.accent
         iv.contentMode = .scaleAspectFit
         iv.accessibilityIdentifier = "auth_logo"
         return iv
@@ -31,51 +31,35 @@ final class LoginViewController: UIViewController {
         let l = UILabel()
         l.translatesAutoresizingMaskIntoConstraints = false
         l.text = "Finly"
-        l.font = .systemFont(ofSize: 32, weight: .bold)
+        l.apply(.largeTitle)
         l.textAlignment = .center
         l.accessibilityIdentifier = "auth_title"
         return l
     }()
 
-    private let emailContainerView = TextFieldContainerView()
+    private let emailField = DSTextField(config: FormFieldConfig(
+        title: "Email",
+        placeholder: "Email",
+        keyboardType: .emailAddress,
+        isSecure: false,
+        returnKeyType: .next,
+        accessibilityIdentifier: "auth_email_field"
+    ))
 
-    private let emailTextField: UITextField = {
-        let tf = UITextField()
-        tf.translatesAutoresizingMaskIntoConstraints = false
-        tf.placeholder = "Email"
-        tf.keyboardType = .emailAddress
-        tf.autocapitalizationType = .none
-        tf.autocorrectionType = .no
-        tf.returnKeyType = .next
-        tf.font = .systemFont(ofSize: 16)
-        tf.isUserInteractionEnabled = true
-        tf.accessibilityIdentifier = "auth_email_field"
-        return tf
-    }()
-
-    private let emailErrorLabel = InlineErrorLabel()
-
-    private let passwordContainerView = TextFieldContainerView()
-
-    private let passwordTextField: UITextField = {
-        let tf = UITextField()
-        tf.translatesAutoresizingMaskIntoConstraints = false
-        tf.placeholder = "Пароль"
-        tf.isSecureTextEntry = true
-        tf.returnKeyType = .done
-        tf.font = .systemFont(ofSize: 16)
-        tf.isUserInteractionEnabled = true
-        tf.accessibilityIdentifier = "auth_password_field"
-        return tf
-    }()
-
-    private let passwordErrorLabel = InlineErrorLabel()
+    private let passwordField = DSTextField(config: FormFieldConfig(
+        title: "Пароль",
+        placeholder: "Пароль",
+        keyboardType: .default,
+        isSecure: true,
+        returnKeyType: .done,
+        accessibilityIdentifier: "auth_password_field"
+    ))
 
     private let generalErrorLabel: UILabel = {
         let l = UILabel()
         l.translatesAutoresizingMaskIntoConstraints = false
-        l.font = .systemFont(ofSize: 14)
-        l.textColor = .systemRed
+        l.font = DS.Typography.caption()
+        l.textColor = DS.Colors.destructive
         l.textAlignment = .center
         l.numberOfLines = 0
         l.isHidden = true
@@ -83,24 +67,10 @@ final class LoginViewController: UIViewController {
         return l
     }()
 
-    private let loginButton: UIButton = {
-        var config = UIButton.Configuration.filled()
-        config.title = "Войти"
-        config.baseBackgroundColor = .systemBlue
-        config.cornerStyle = .large
-        config.buttonSize = .large
-        let b = UIButton(configuration: config)
-        b.translatesAutoresizingMaskIntoConstraints = false
+    private let loginButton: DSButton = {
+        let b = DSButton(style: .primary, title: "Войти")
         b.accessibilityIdentifier = "auth_login_button"
         return b
-    }()
-
-    private let activityIndicator: UIActivityIndicatorView = {
-        let ai = UIActivityIndicatorView(style: .medium)
-        ai.translatesAutoresizingMaskIntoConstraints = false
-        ai.hidesWhenStopped = true
-        ai.color = .white
-        return ai
     }()
 
     private let telegramButton: UIButton = {
@@ -151,7 +121,7 @@ final class LoginViewController: UIViewController {
     }
 
     private func setupAppearance() {
-        view.backgroundColor = .systemBackground
+        view.backgroundColor = DS.Colors.background
         navigationController?.setNavigationBarHidden(true, animated: false)
     }
 
@@ -162,26 +132,18 @@ final class LoginViewController: UIViewController {
         [
             logoImageView,
             titleLabel,
-            emailContainerView,
-            emailErrorLabel,
-            passwordContainerView,
-            passwordErrorLabel,
+            emailField,
+            passwordField,
             generalErrorLabel,
             loginButton,
             dividerView,
             telegramButton,
             registerButton
         ].forEach { contentView.addSubview($0) }
-
-        emailContainerView.addTextField(emailTextField)
-        passwordContainerView.addTextField(passwordTextField)
-
-        loginButton.addSubview(activityIndicator)
     }
 
     private func setupConstraints() {
-        let h: CGFloat = 24
-        let fh: CGFloat = 52
+        let h: CGFloat = DS.Spacing.xl
 
         NSLayoutConstraint.activate([
 
@@ -199,60 +161,47 @@ final class LoginViewController: UIViewController {
                 greaterThanOrEqualTo: view.safeAreaLayoutGuide.heightAnchor
             ),
 
-            logoImageView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 52),
+            logoImageView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: DS.Spacing.fieldHeight),
             logoImageView.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
             logoImageView.widthAnchor.constraint(equalToConstant: 64),
             logoImageView.heightAnchor.constraint(equalToConstant: 64),
 
-            titleLabel.topAnchor.constraint(equalTo: logoImageView.bottomAnchor, constant: 16),
+            titleLabel.topAnchor.constraint(equalTo: logoImageView.bottomAnchor, constant: DS.Spacing.l),
             titleLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: h),
             titleLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -h),
 
-            emailContainerView.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 40),
-            emailContainerView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: h),
-            emailContainerView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -h),
-            emailContainerView.heightAnchor.constraint(equalToConstant: fh),
+            emailField.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: DS.Spacing.xxxl),
+            emailField.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: h),
+            emailField.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -h),
 
-            emailErrorLabel.topAnchor.constraint(equalTo: emailContainerView.bottomAnchor, constant: 4),
-            emailErrorLabel.leadingAnchor.constraint(equalTo: emailContainerView.leadingAnchor, constant: 4),
-            emailErrorLabel.trailingAnchor.constraint(equalTo: emailContainerView.trailingAnchor),
+            passwordField.topAnchor.constraint(equalTo: emailField.bottomAnchor, constant: DS.Spacing.xl),
+            passwordField.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: h),
+            passwordField.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -h),
 
-            passwordContainerView.topAnchor.constraint(equalTo: emailContainerView.bottomAnchor, constant: 24),
-            passwordContainerView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: h),
-            passwordContainerView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -h),
-            passwordContainerView.heightAnchor.constraint(equalToConstant: fh),
-
-            passwordErrorLabel.topAnchor.constraint(equalTo: passwordContainerView.bottomAnchor, constant: 4),
-            passwordErrorLabel.leadingAnchor.constraint(equalTo: passwordContainerView.leadingAnchor, constant: 4),
-            passwordErrorLabel.trailingAnchor.constraint(equalTo: passwordContainerView.trailingAnchor),
-
-            generalErrorLabel.topAnchor.constraint(equalTo: passwordContainerView.bottomAnchor, constant: 24),
+            generalErrorLabel.topAnchor.constraint(equalTo: passwordField.bottomAnchor, constant: DS.Spacing.xl),
             generalErrorLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: h),
             generalErrorLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -h),
 
-            loginButton.topAnchor.constraint(equalTo: generalErrorLabel.bottomAnchor, constant: 12),
+            loginButton.topAnchor.constraint(equalTo: generalErrorLabel.bottomAnchor, constant: DS.Spacing.m),
             loginButton.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: h),
             loginButton.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -h),
-            loginButton.heightAnchor.constraint(equalToConstant: fh),
+            loginButton.heightAnchor.constraint(equalToConstant: DS.Spacing.fieldHeight),
 
-            activityIndicator.centerXAnchor.constraint(equalTo: loginButton.centerXAnchor),
-            activityIndicator.centerYAnchor.constraint(equalTo: loginButton.centerYAnchor),
-
-            dividerView.topAnchor.constraint(equalTo: loginButton.bottomAnchor, constant: 24),
+            dividerView.topAnchor.constraint(equalTo: loginButton.bottomAnchor, constant: DS.Spacing.xl),
             dividerView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: h),
             dividerView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -h),
             dividerView.heightAnchor.constraint(equalToConstant: 20),
 
-            telegramButton.topAnchor.constraint(equalTo: dividerView.bottomAnchor, constant: 16),
+            telegramButton.topAnchor.constraint(equalTo: dividerView.bottomAnchor, constant: DS.Spacing.l),
             telegramButton.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: h),
             telegramButton.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -h),
-            telegramButton.heightAnchor.constraint(equalToConstant: fh),
+            telegramButton.heightAnchor.constraint(equalToConstant: DS.Spacing.fieldHeight),
 
-            registerButton.topAnchor.constraint(equalTo: telegramButton.bottomAnchor, constant: 12),
+            registerButton.topAnchor.constraint(equalTo: telegramButton.bottomAnchor, constant: DS.Spacing.m),
             registerButton.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
             registerButton.bottomAnchor.constraint(
                 lessThanOrEqualTo: contentView.bottomAnchor,
-                constant: -32
+                constant: -DS.Spacing.xxl
             ),
         ])
     }
@@ -266,20 +215,20 @@ final class LoginViewController: UIViewController {
         tap.cancelsTouchesInView = false
         view.addGestureRecognizer(tap)
 
-        emailTextField.addTarget(self, action: #selector(emailChanged), for: .editingChanged)
-        passwordTextField.addTarget(self, action: #selector(passwordChanged), for: .editingChanged)
+        emailField.textField.addTarget(self, action: #selector(emailChanged), for: .editingChanged)
+        passwordField.textField.addTarget(self, action: #selector(passwordChanged), for: .editingChanged)
     }
 
     private func setupDelegates() {
-        emailTextField.delegate = self
-        passwordTextField.delegate = self
+        emailField.textField.delegate = self
+        passwordField.textField.delegate = self
     }
 
     @objc private func loginTapped() {
         dismissKeyboard()
         viewModel.didTapLoginWithEmail(
-            email: emailTextField.text ?? "",
-            password: passwordTextField.text ?? ""
+            email: emailField.text ?? "",
+            password: passwordField.text ?? ""
         )
     }
 
@@ -296,13 +245,13 @@ final class LoginViewController: UIViewController {
     }
 
     @objc private func emailChanged() {
-        viewModel.didChangeEmail(emailTextField.text ?? "")
+        viewModel.didChangeEmail(emailField.text ?? "")
     }
 
     @objc private func passwordChanged() {
-        viewModel.didChangePassword(passwordTextField.text ?? "")
+        viewModel.didChangePassword(passwordField.text ?? "")
     }
-    
+
     private func setupKeyboardObservers() {
         NotificationCenter.default.addObserver(
             self,
@@ -333,45 +282,33 @@ final class LoginViewController: UIViewController {
             self.scrollView.verticalScrollIndicatorInsets.bottom = bottomInset
         }
     }
-
 }
+
+// MARK: - AuthView
 
 extension LoginViewController: AuthView {
 
     func render(_ state: AuthViewState) {
-        loginButton.isEnabled       = !state.isLoading
-        emailTextField.isEnabled    = !state.isLoading
-        passwordTextField.isEnabled = !state.isLoading
-
-        if state.isLoading {
-            activityIndicator.startAnimating()
-            loginButton.configuration?.title = ""
-        } else {
-            activityIndicator.stopAnimating()
-            loginButton.configuration?.title = "Войти"
-        }
+        loginButton.setLoading(state.isLoading)
+        loginButton.isEnabled = !state.isLoading
+        emailField.isEnabled = !state.isLoading
+        passwordField.isEnabled = !state.isLoading
 
         if let emailError = state.emailError {
-            emailErrorLabel.show(emailError)
-            emailContainerView.setHighlight(.error)
+            emailField.showError(emailError)
         } else {
-            emailErrorLabel.hide()
-            if emailTextField.isEditing {
-                emailContainerView.setHighlight(.focused)
-            } else {
-                emailContainerView.setHighlight(.normal)
+            emailField.clearError()
+            if emailField.textField.isEditing {
+                emailField.setHighlight(.focused)
             }
         }
 
         if let passwordError = state.passwordError {
-            passwordErrorLabel.show(passwordError)
-            passwordContainerView.setHighlight(.error)
+            passwordField.showError(passwordError)
         } else {
-            passwordErrorLabel.hide()
-            if passwordTextField.isEditing {
-                passwordContainerView.setHighlight(.focused)
-            } else {
-                passwordContainerView.setHighlight(.normal)
+            passwordField.clearError()
+            if passwordField.textField.isEditing {
+                passwordField.setHighlight(.focused)
             }
         }
 
@@ -381,17 +318,16 @@ extension LoginViewController: AuthView {
                 generalErrorLabel.text = nil
                 showAlert(message: message)
             } else {
-                generalErrorLabel.text     = message
+                generalErrorLabel.text = message
                 generalErrorLabel.isHidden = false
-                emailContainerView.setHighlight(.error)
-                passwordContainerView.setHighlight(.error)
+                emailField.setHighlight(.error)
+                passwordField.setHighlight(.error)
             }
         } else {
             generalErrorLabel.isHidden = true
             generalErrorLabel.text = nil
         }
     }
-
 
     private func showAlert(message: String) {
         let alert = UIAlertController(
@@ -406,11 +342,13 @@ extension LoginViewController: AuthView {
     }
 }
 
+// MARK: - UITextFieldDelegate
+
 extension LoginViewController: UITextFieldDelegate {
 
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        if textField == emailTextField {
-            passwordTextField.becomeFirstResponder()
+        if textField == emailField.textField {
+            passwordField.textField.becomeFirstResponder()
         } else {
             textField.resignFirstResponder()
             loginTapped()
@@ -419,13 +357,13 @@ extension LoginViewController: UITextFieldDelegate {
     }
 
     func textFieldDidBeginEditing(_ textField: UITextField) {
-        let container = textField == emailTextField ? emailContainerView : passwordContainerView
-        container.setHighlight(.focused)
+        let field = textField == emailField.textField ? emailField : passwordField
+        field.setHighlight(.focused)
         generalErrorLabel.isHidden = true
     }
 
     func textFieldDidEndEditing(_ textField: UITextField) {
-        let container = textField == emailTextField ? emailContainerView : passwordContainerView
-        container.setHighlight(.normal)
+        let field = textField == emailField.textField ? emailField : passwordField
+        field.setHighlight(.normal)
     }
 }
