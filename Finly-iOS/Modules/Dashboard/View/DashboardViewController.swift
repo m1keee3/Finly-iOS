@@ -148,10 +148,11 @@ extension DashboardViewController: DashboardView {
             break
 
         case .loading:
-            if !refreshControl.isRefreshing {
-                spinner.isHidden = false
-                spinner.startAnimating()
-            }
+            spinner.isHidden = false
+            spinner.startAnimating()
+
+        case .refreshing:
+            break
 
         case .content:
             refreshControl.endRefreshing()
@@ -181,7 +182,6 @@ extension DashboardViewController: PatternsListManagerDelegate {
 extension DashboardViewController: UISearchResultsUpdating {
 
     func updateSearchResults(for searchController: UISearchController) {
-        let query = searchController.searchBar.text ?? ""
-        viewModel.didChangeSearch(query)
+        viewModel.didChangeSearch(searchController.searchBar.text)
     }
 }

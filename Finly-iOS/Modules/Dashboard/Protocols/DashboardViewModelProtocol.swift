@@ -13,7 +13,7 @@ protocol DashboardViewModelProtocol {
     
     func didSelectPattern(_ patternId: String)
 
-    func didChangeSearch(_ query: String)
+    func didChangeSearch(_ query: String?)
 
     func didTapRetry()
 }
