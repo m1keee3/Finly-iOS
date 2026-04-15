@@ -21,20 +21,10 @@ final class PatternDetailViewController: UIViewController {
     @available(*, unavailable)
     required init?(coder: NSCoder) { fatalError() }
 
-    @objc private func handleBack() {
-        navigationController?.popViewController(animated: true)
-    }
-
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .systemBackground
         title = "Детали паттерна"
-        navigationItem.leftBarButtonItem = UIBarButtonItem(
-            title: "Назад",
-            style: .plain,
-            target: self,
-            action: #selector(handleBack)
-        )
 
         idLabel.text = "ID: \(patternId)"
         idLabel.translatesAutoresizingMaskIntoConstraints = false
