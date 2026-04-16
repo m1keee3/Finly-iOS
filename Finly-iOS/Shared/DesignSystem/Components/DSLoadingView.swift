@@ -2,6 +2,10 @@ import UIKit
 
 final class DSLoadingView: UIView {
 
+    struct Config {
+        var isAnimating: Bool
+    }
+
     private let spinner = UIActivityIndicatorView(style: .medium)
 
     init() {
@@ -19,7 +23,7 @@ final class DSLoadingView: UIView {
     @available(*, unavailable)
     required init?(coder: NSCoder) { fatalError() }
 
-    func startAnimating() { spinner.startAnimating() }
-    func stopAnimating() { spinner.stopAnimating() }
-    var isAnimating: Bool { spinner.isAnimating }
+    func configure(_ config: Config) {
+        config.isAnimating ? spinner.startAnimating() : spinner.stopAnimating()
+    }
 }

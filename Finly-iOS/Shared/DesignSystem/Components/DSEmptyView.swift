@@ -2,6 +2,10 @@ import UIKit
 
 final class DSEmptyView: UIView {
 
+    struct Config {
+        var message: String
+    }
+
     private let label: UILabel = {
         let l = UILabel()
         l.translatesAutoresizingMaskIntoConstraints = false
@@ -11,11 +15,10 @@ final class DSEmptyView: UIView {
         return l
     }()
 
-    init(message: String = "Паттерны не найдены") {
+    init() {
         super.init(frame: .zero)
         translatesAutoresizingMaskIntoConstraints = false
         addSubview(label)
-        label.text = message
         NSLayoutConstraint.activate([
             label.topAnchor.constraint(equalTo: topAnchor),
             label.bottomAnchor.constraint(equalTo: bottomAnchor),
@@ -27,7 +30,7 @@ final class DSEmptyView: UIView {
     @available(*, unavailable)
     required init?(coder: NSCoder) { fatalError() }
 
-    func configure(message: String) {
-        label.text = message
+    func configure(_ config: Config) {
+        label.text = config.message
     }
 }

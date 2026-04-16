@@ -2,6 +2,10 @@ import UIKit
 
 final class DSErrorView: UIView {
 
+    struct Config {
+        var message: String
+    }
+
     var onRetry: (() -> Void)?
 
     private let messageLabel: UILabel = {
@@ -12,7 +16,11 @@ final class DSErrorView: UIView {
         return l
     }()
 
-    private lazy var retryButton = DSButton(style: .plain, title: "Повторить")
+    private lazy var retryButton: DSButton = {
+        let b = DSButton()
+        b.configure(DSButton.Config(style: .plain, title: "Повторить"))
+        return b
+    }()
 
     private lazy var stack: UIStackView = {
         let s = UIStackView(arrangedSubviews: [messageLabel, retryButton])
@@ -39,8 +47,8 @@ final class DSErrorView: UIView {
     @available(*, unavailable)
     required init?(coder: NSCoder) { fatalError() }
 
-    func configure(message: String) {
-        messageLabel.text = message
+    func configure(_ config: Config) {
+        messageLabel.text = config.message
     }
 
     @objc private func retryTapped() {

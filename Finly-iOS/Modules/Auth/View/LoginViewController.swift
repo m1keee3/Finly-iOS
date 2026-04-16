@@ -37,23 +37,26 @@ final class LoginViewController: UIViewController {
         return l
     }()
 
-    private let emailField = DSTextField(config: FormFieldConfig(
+    private let emailField = DSTextField()
+    private let passwordField = DSTextField()
+
+    private var emailConfig = DSTextField.Config(
         title: "Email",
         placeholder: "Email",
         keyboardType: .emailAddress,
         isSecure: false,
         returnKeyType: .next,
         accessibilityIdentifier: "auth_email_field"
-    ))
+    )
 
-    private let passwordField = DSTextField(config: FormFieldConfig(
+    private var passwordConfig = DSTextField.Config(
         title: "Пароль",
         placeholder: "Пароль",
         keyboardType: .default,
         isSecure: true,
         returnKeyType: .done,
         accessibilityIdentifier: "auth_password_field"
-    ))
+    )
 
     private let generalErrorLabel: UILabel = {
         let l = UILabel()
@@ -68,7 +71,7 @@ final class LoginViewController: UIViewController {
     }()
 
     private let loginButton: DSButton = {
-        let b = DSButton(style: .primary, title: "Войти")
+        let b = DSButton()
         b.accessibilityIdentifier = "auth_login_button"
         return b
     }()
@@ -113,6 +116,7 @@ final class LoginViewController: UIViewController {
         setupActions()
         setupDelegates()
         setupKeyboardObservers()
+        setupFields()
     }
 
     override func viewWillDisappear(_ animated: Bool) {
@@ -123,6 +127,12 @@ final class LoginViewController: UIViewController {
     private func setupAppearance() {
         view.backgroundColor = DS.Colors.background
         navigationController?.setNavigationBarHidden(true, animated: false)
+    }
+
+    private func setupFields() {
+        emailField.configure(emailConfig)
+        passwordField.configure(passwordConfig)
+        loginButton.configure(DSButton.Config(style: .primary, title: "Войти"))
     }
 
     private func setupHierarchy() {
@@ -287,28 +297,29 @@ final class LoginViewController: UIViewController {
 extension LoginViewController: AuthView {
 
     func render(_ state: AuthViewState) {
-        loginButton.setLoading(state.isLoading)
-        loginButton.isEnabled = !state.isLoading
-        emailField.isEnabled = !state.isLoading
-        passwordField.isEnabled = !state.isLoading
+        loginButton.configure(DSButton.Config(
+            style: .primary,
+            title: "Войти",
+            isEnabled: !state.isLoading
+        ))
 
-        if let emailError = state.emailError {
-            emailField.showError(emailError)
-        } else {
-            emailField.clearError()
-            if emailField.textField.isEditing {
-                emailField.setHighlight(.focused)
-            }
-        }
+        emailConfig.isEnabled = !state.isLoading
+        emailConfig.errorMessage = state.emailError
+        emailConfig.highlight = highlightFor(
+            error: state.emailError,
+            generalError: !state.showErrorAsAlert ? state.errorMessage : nil,
+            isEditing: emailField.textField.isEditing
+        )
+        emailField.configure(emailConfig)
 
-        if let passwordError = state.passwordError {
-            passwordField.showError(passwordError)
-        } else {
-            passwordField.clearError()
-            if passwordField.textField.isEditing {
-                passwordField.setHighlight(.focused)
-            }
-        }
+        passwordConfig.isEnabled = !state.isLoading
+        passwordConfig.errorMessage = state.passwordError
+        passwordConfig.highlight = highlightFor(
+            error: state.passwordError,
+            generalError: !state.showErrorAsAlert ? state.errorMessage : nil,
+            isEditing: passwordField.textField.isEditing
+        )
+        passwordField.configure(passwordConfig)
 
         if let message = state.errorMessage {
             if state.showErrorAsAlert {
@@ -318,13 +329,21 @@ extension LoginViewController: AuthView {
             } else {
                 generalErrorLabel.text = message
                 generalErrorLabel.isHidden = false
-                emailField.setHighlight(.error)
-                passwordField.setHighlight(.error)
             }
         } else {
             generalErrorLabel.isHidden = true
             generalErrorLabel.text = nil
         }
+    }
+
+    private func highlightFor(
+        error: String?,
+        generalError: String?,
+        isEditing: Bool
+    ) -> DSTextField.Highlight {
+        if error != nil || generalError != nil { return .error }
+        if isEditing { return .focused }
+        return .normal
     }
 
     private func showAlert(message: String) {
@@ -340,7 +359,6 @@ extension LoginViewController: AuthView {
     }
 }
 
-
 extension LoginViewController: UITextFieldDelegate {
 
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
@@ -354,13 +372,23 @@ extension LoginViewController: UITextFieldDelegate {
     }
 
     func textFieldDidBeginEditing(_ textField: UITextField) {
-        let field = textField == emailField.textField ? emailField : passwordField
-        field.setHighlight(.focused)
+        if textField == emailField.textField {
+            emailConfig.highlight = .focused
+            emailField.configure(emailConfig)
+        } else {
+            passwordConfig.highlight = .focused
+            passwordField.configure(passwordConfig)
+        }
         generalErrorLabel.isHidden = true
     }
 
     func textFieldDidEndEditing(_ textField: UITextField) {
-        let field = textField == emailField.textField ? emailField : passwordField
-        field.setHighlight(.normal)
+        if textField == emailField.textField {
+            emailConfig.highlight = .normal
+            emailField.configure(emailConfig)
+        } else {
+            passwordConfig.highlight = .normal
+            passwordField.configure(passwordConfig)
+        }
     }
 }

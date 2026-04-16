@@ -102,7 +102,7 @@ final class DashboardViewController: UIViewController {
 extension DashboardViewController: DashboardView {
 
     func render(_ state: DashboardViewState) {
-        loadingView.stopAnimating()
+        loadingView.configure(DSLoadingView.Config(isAnimating: false))
         tableView.isHidden = true
         emptyView.isHidden = true
         errorView.isHidden = true
@@ -112,7 +112,7 @@ extension DashboardViewController: DashboardView {
             break
 
         case .loading:
-            loadingView.startAnimating()
+            loadingView.configure(DSLoadingView.Config(isAnimating: true))
 
         case .refreshing:
             break
@@ -125,11 +125,12 @@ extension DashboardViewController: DashboardView {
 
         case .empty:
             refreshControl.endRefreshing()
+            emptyView.configure(DSEmptyView.Config(message: "Паттерны не найдены"))
             emptyView.isHidden = false
 
         case .error(let message):
             refreshControl.endRefreshing()
-            errorView.configure(message: message)
+            errorView.configure(DSErrorView.Config(message: message))
             errorView.isHidden = false
         }
     }
