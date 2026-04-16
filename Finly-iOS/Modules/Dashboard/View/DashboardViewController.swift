@@ -8,40 +8,9 @@ final class DashboardViewController: UIViewController {
     private let listManager = PatternsListManager()
     private let statsHeaderView = DashboardStatsHeaderView()
 
-    private let spinner = UIActivityIndicatorView(style: .medium)
-
-    private let emptyLabel: UILabel = {
-        let label = UILabel()
-        label.text = "Паттерны не найдены"
-        label.font = .systemFont(ofSize: 17)
-        label.textColor = .secondaryLabel
-        label.textAlignment = .center
-        return label
-    }()
-
-    private let errorLabel: UILabel = {
-        let label = UILabel()
-        label.font = .systemFont(ofSize: 15)
-        label.textColor = .secondaryLabel
-        label.textAlignment = .center
-        label.numberOfLines = 0
-        return label
-    }()
-
-    private let retryButton: UIButton = {
-        let button = UIButton(type: .system)
-        button.setTitle("Повторить", for: .normal)
-        button.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
-        return button
-    }()
-
-    private lazy var errorStack: UIStackView = {
-        let stack = UIStackView(arrangedSubviews: [errorLabel, retryButton])
-        stack.axis = .vertical
-        stack.alignment = .center
-        stack.spacing = 12
-        return stack
-    }()
+    private let loadingView = DSLoadingView()
+    private let emptyView = DSEmptyView()
+    private let errorView = DSErrorView()
 
     private let refreshControl = UIRefreshControl()
 
@@ -68,7 +37,7 @@ final class DashboardViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .systemBackground
+        view.backgroundColor = DS.Colors.background
         title = "Dashboard"
 
         setupNavigationBar()
@@ -85,7 +54,7 @@ final class DashboardViewController: UIViewController {
     }
 
     private func setupLayout() {
-        [tableView, spinner, emptyLabel, errorStack].forEach {
+        [tableView, loadingView, emptyView, errorView].forEach {
             $0.translatesAutoresizingMaskIntoConstraints = false
             view.addSubview($0)
         }
@@ -96,18 +65,18 @@ final class DashboardViewController: UIViewController {
             tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
 
-            spinner.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            spinner.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+            loadingView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            loadingView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
 
-            emptyLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            emptyLabel.centerYAnchor.constraint(equalTo: view.centerYAnchor),
-            emptyLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 32),
-            emptyLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -32),
+            emptyView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            emptyView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+            emptyView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: DS.Spacing.xxl),
+            emptyView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -DS.Spacing.xxl),
 
-            errorStack.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            errorStack.centerYAnchor.constraint(equalTo: view.centerYAnchor),
-            errorStack.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 32),
-            errorStack.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -32),
+            errorView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            errorView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+            errorView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: DS.Spacing.xxl),
+            errorView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -DS.Spacing.xxl),
         ])
     }
 
@@ -122,34 +91,28 @@ final class DashboardViewController: UIViewController {
 
     private func setupActions() {
         refreshControl.addTarget(self, action: #selector(handleRefresh), for: .valueChanged)
-        retryButton.addTarget(self, action: #selector(handleRetry), for: .touchUpInside)
-    }
-    
-    @objc private func handleRefresh() {
-        viewModel.didPullToRefresh()
+        errorView.onRetry = { [weak self] in self?.viewModel.didTapRetry() }
     }
 
-    @objc private func handleRetry() {
-        viewModel.didTapRetry()
+    @objc private func handleRefresh() {
+        viewModel.didPullToRefresh()
     }
 }
 
 extension DashboardViewController: DashboardView {
 
     func render(_ state: DashboardViewState) {
-        spinner.isHidden = true
-        spinner.stopAnimating()
+        loadingView.stopAnimating()
         tableView.isHidden = true
-        emptyLabel.isHidden = true
-        errorStack.isHidden = true
+        emptyView.isHidden = true
+        errorView.isHidden = true
 
         switch state.loadingState {
         case .idle:
             break
 
         case .loading:
-            spinner.isHidden = false
-            spinner.startAnimating()
+            loadingView.startAnimating()
 
         case .refreshing:
             break
@@ -162,12 +125,12 @@ extension DashboardViewController: DashboardView {
 
         case .empty:
             refreshControl.endRefreshing()
-            emptyLabel.isHidden = false
+            emptyView.isHidden = false
 
         case .error(let message):
             refreshControl.endRefreshing()
-            errorLabel.text = message
-            errorStack.isHidden = false
+            errorView.configure(message: message)
+            errorView.isHidden = false
         }
     }
 }

@@ -284,8 +284,6 @@ final class LoginViewController: UIViewController {
     }
 }
 
-// MARK: - AuthView
-
 extension LoginViewController: AuthView {
 
     func render(_ state: AuthViewState) {
@@ -342,7 +340,6 @@ extension LoginViewController: AuthView {
     }
 }
 
-// MARK: - UITextFieldDelegate
 
 extension LoginViewController: UITextFieldDelegate {
 
