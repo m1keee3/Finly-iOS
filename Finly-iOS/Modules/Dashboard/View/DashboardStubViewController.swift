@@ -72,7 +72,7 @@ extension DashboardStubViewController: DashboardView {
             statsLabel.text = nil
             countLabel.text = nil
 
-        case .loading:
+        case .loading, .refreshing:
             statusLabel.text = "Загрузка..."
             statsLabel.text = nil
             countLabel.text = nil
@@ -83,7 +83,7 @@ extension DashboardStubViewController: DashboardView {
                 let prob = Int(s.bestProbability * 100)
                 statsLabel.text = "Лучший: \(s.bestTicker) · \(prob)% · всего паттернов: \(s.activePatterns)"
                 let avgChange = String(format: "%.2f", s.avgPriceChange * 100)
-                countLabel.text = "Показано: \(state.filteredPatterns.count) · ср. изм. цены: \(avgChange)%"
+                countLabel.text = "Показано: \(state.cellViewModels.count) · ср. изм. цены: \(avgChange)%"
             }
 
         case .empty:
