@@ -15,15 +15,15 @@ enum DS {
     }
 
     enum Typography {
-        static func largeTitle() -> UIFont       { .systemFont(ofSize: 32, weight: .bold) }
-        static func title() -> UIFont            { .systemFont(ofSize: 17) }
-        static func bodyLarge() -> UIFont        { .systemFont(ofSize: 16) }
-        static func bodyLargeSemibold() -> UIFont { .systemFont(ofSize: 16, weight: .semibold) }
-        static func body() -> UIFont             { .systemFont(ofSize: 15) }
-        static func bodyMedium() -> UIFont       { .systemFont(ofSize: 15, weight: .medium) }
-        static func bodySmallSemibold() -> UIFont { .systemFont(ofSize: 15, weight: .semibold) }
-        static func bodySmall() -> UIFont        { .systemFont(ofSize: 13) }
-        static func caption() -> UIFont          { .systemFont(ofSize: 12) }
+        static let largeTitle:  UIFont       = .systemFont(ofSize: 32, weight: .bold)
+        static let title:  UIFont            = .systemFont(ofSize: 17)
+        static let bodyLarge:  UIFont        = .systemFont(ofSize: 16)
+        static let bodyLargeSemibold:  UIFont = .systemFont(ofSize: 16, weight: .semibold)
+        static let body:  UIFont             = .systemFont(ofSize: 15)
+        static let bodyMedium:  UIFont       = .systemFont(ofSize: 15, weight: .medium)
+        static let bodySmallSemibold:  UIFont = .systemFont(ofSize: 15, weight: .semibold)
+        static let bodySmall:  UIFont        = .systemFont(ofSize: 13)
+        static let caption:  UIFont          = .systemFont(ofSize: 12)
     }
 
     enum Spacing {

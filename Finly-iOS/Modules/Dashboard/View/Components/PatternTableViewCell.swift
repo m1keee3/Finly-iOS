@@ -45,7 +45,7 @@ final class PatternTableViewCell: UITableViewCell {
         probabilityLabel.setContentHuggingPriority(.required, for: .horizontal)
         probabilityLabel.setContentCompressionResistancePriority(.required, for: .horizontal)
 
-        priceChangeLabel.font = DS.Typography.bodySmall()
+        priceChangeLabel.font = DS.Typography.bodySmall
         priceChangeLabel.textAlignment = .right
         priceChangeLabel.setContentHuggingPriority(.required, for: .horizontal)
         priceChangeLabel.setContentCompressionResistancePriority(.required, for: .horizontal)

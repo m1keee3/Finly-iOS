@@ -61,7 +61,7 @@ final class LoginViewController: UIViewController {
     private let generalErrorLabel: UILabel = {
         let l = UILabel()
         l.translatesAutoresizingMaskIntoConstraints = false
-        l.font = DS.Typography.caption()
+        l.font = DS.Typography.caption
         l.textColor = DS.Colors.destructive
         l.textAlignment = .center
         l.numberOfLines = 0

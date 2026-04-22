@@ -24,7 +24,7 @@ final class DSTextField: UIView {
     private let titleLabel: UILabel = {
         let l = UILabel()
         l.translatesAutoresizingMaskIntoConstraints = false
-        l.font = DS.Typography.caption()
+        l.font = DS.Typography.caption
         l.textColor = DS.Colors.labelSecondary
         return l
     }()
@@ -41,7 +41,7 @@ final class DSTextField: UIView {
     private let _textField: UITextField = {
         let tf = UITextField()
         tf.translatesAutoresizingMaskIntoConstraints = false
-        tf.font = DS.Typography.bodyLarge()
+        tf.font = DS.Typography.bodyLarge
         tf.autocapitalizationType = .none
         tf.autocorrectionType = .no
         return tf
@@ -50,7 +50,7 @@ final class DSTextField: UIView {
     private let errorLabel: UILabel = {
         let l = UILabel()
         l.translatesAutoresizingMaskIntoConstraints = false
-        l.font = DS.Typography.caption()
+        l.font = DS.Typography.caption
         l.textColor = DS.Colors.destructive
         l.isHidden = true
         l.numberOfLines = 0

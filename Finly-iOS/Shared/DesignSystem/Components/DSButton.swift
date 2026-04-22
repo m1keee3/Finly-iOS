@@ -44,7 +44,7 @@ final class DSButton: UIButton {
             buttonConfig.title = config.title
             buttonConfig.titleTextAttributesTransformer = UIConfigurationTextAttributesTransformer { attrs in
                 var updated = attrs
-                updated.font = DS.Typography.bodyMedium()
+                updated.font = DS.Typography.bodyMedium
                 return updated
             }
             configuration = buttonConfig

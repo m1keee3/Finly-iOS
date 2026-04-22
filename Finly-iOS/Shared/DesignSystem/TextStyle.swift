@@ -16,18 +16,18 @@ enum TextStyle {
 
     var font: UIFont {
         switch self {
-        case .largeTitle:    return DS.Typography.largeTitle()
-        case .title:         return DS.Typography.title()
-        case .body:          return DS.Typography.bodyLarge()
-        case .bodySecondary: return DS.Typography.body()
-        case .listTitle:     return DS.Typography.bodyLargeSemibold()
-        case .listSubtitle:  return DS.Typography.bodySmall()
-        case .listMetric:    return DS.Typography.bodyMedium()
-        case .sectionHeader: return DS.Typography.bodySmallSemibold()
-        case .sectionMeta:   return DS.Typography.bodySmall()
-        case .caption:       return DS.Typography.caption()
-        case .stateLabel:    return DS.Typography.title()
-        case .errorBody:     return DS.Typography.body()
+        case .largeTitle:    return DS.Typography.largeTitle
+        case .title:         return DS.Typography.title
+        case .body:          return DS.Typography.bodyLarge
+        case .bodySecondary: return DS.Typography.body
+        case .listTitle:     return DS.Typography.bodyLargeSemibold
+        case .listSubtitle:  return DS.Typography.bodySmall
+        case .listMetric:    return DS.Typography.bodyMedium
+        case .sectionHeader: return DS.Typography.bodySmallSemibold
+        case .sectionMeta:   return DS.Typography.bodySmall
+        case .caption:       return DS.Typography.caption
+        case .stateLabel:    return DS.Typography.title
+        case .errorBody:     return DS.Typography.body
         }
     }
 
