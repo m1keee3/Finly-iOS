@@ -4,7 +4,8 @@ final class AuthCoordinator: AuthCoordinatorProtocol {
 
     private let navigationController: UINavigationController
     private let authService: AuthServiceProtocol
-    private var childCoordinator: DashboardCoordinator?
+    private var dashboardCoordinator: DashboardCoordinator?
+    private var profileCoordinator: ProfileCoordinator?
 
     private let telegramBotURL = URL(string: "https://t.me/finly_bot")!
 
@@ -38,7 +39,17 @@ final class AuthCoordinator: AuthCoordinatorProtocol {
                 navigationController: self.navigationController,
                 session: session
             )
-            self.childCoordinator = coordinator
+            self.dashboardCoordinator = coordinator
+            coordinator.start()
+        }
+
+        stubVC.onProfileTap = { [weak self] in
+            guard let self else { return }
+            let coordinator = ProfileCoordinator(
+                navigationController: self.navigationController,
+                session: session
+            )
+            self.profileCoordinator = coordinator
             coordinator.start()
         }
 
