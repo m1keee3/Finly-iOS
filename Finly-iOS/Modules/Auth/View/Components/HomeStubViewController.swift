@@ -5,6 +5,7 @@ final class HomeStubViewController: UIViewController {
     private let session: UserSession
 
     var onDashboardTap: (() -> Void)?
+    var onProfileTap: (() -> Void)?
 
     init(session: UserSession) {
         self.session = session
@@ -17,6 +18,8 @@ final class HomeStubViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .systemBackground
+        title = "Главная"
+        navigationController?.setNavigationBarHidden(false, animated: false)
         setupLayout()
     }
 
@@ -44,7 +47,13 @@ final class HomeStubViewController: UIViewController {
         let dashboardButton = UIButton(configuration: config)
         dashboardButton.addTarget(self, action: #selector(dashboardTapped), for: .touchUpInside)
 
-        [title, stub, dashboardButton].forEach { stack.addArrangedSubview($0) }
+        var bdConfig = UIButton.Configuration.tinted()
+        bdConfig.title = "Профиль"
+        bdConfig.cornerStyle = .large
+        let bdButton = UIButton(configuration: bdConfig)
+        bdButton.addTarget(self, action: #selector(profileTapped), for: .touchUpInside)
+
+        [title, stub, dashboardButton, bdButton].forEach { stack.addArrangedSubview($0) }
 
         NSLayoutConstraint.activate([
             stack.centerXAnchor.constraint(equalTo: view.centerXAnchor),
@@ -56,5 +65,9 @@ final class HomeStubViewController: UIViewController {
 
     @objc private func dashboardTapped() {
         onDashboardTap?()
+    }
+
+    @objc private func profileTapped() {
+        onProfileTap?()
     }
 }
